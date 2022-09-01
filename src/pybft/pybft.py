@@ -13,8 +13,13 @@ import pdb
 # ----------------------------------------------------------------------------
 # Import the beamformation library
 
+def dir_mine():
+    dirMine = osp.dirname(inspect.getabsfile(dir_mine))
+    return dirMine
+
 try:
-    dirname = osp.dirname(inspect.getabsfile(lambda x: None))
+    dirname = dir_mine()
+
     if sys.platform == 'win32':
         libbft = ct.CDLL(osp.join(dirname, 'bft.dll'))
     elif sys.platform == 'darwin':
@@ -244,6 +249,8 @@ All parameters and values are given in SI units.
         '''
         if not(identifier in ['c', 'fs']):
             raise RuntimeError('Unknown identifier "{0}"'.format(identifier))
+        if sys.version_info.major > 2:
+            identifier = identifier.encode('utf8')
 
         return libbft.bft_param(identifier, ct.c_double(value))
     # bft_param
